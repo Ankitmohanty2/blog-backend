@@ -1,40 +1,45 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import connectDB from './db/connection.js';
+import authRoutes from './routes/auth.routes.js';
+import blogRoutes from './routes/blog.routes.js';
+import { errorHandler } from './middlewares/error.middleware.js';
 
-dotenv.config();
+dotenv.config({ path: path.join(process.cwd(), '.env') });
+
+try {
+  connectDB();
+} catch (error) {
+  console.error('Error connecting to MongoDB:', error);
+}
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok" });
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Blog API is running'
+  });
 });
 
-const PORT = Number(process.env.PORT || 3000);
-const MONGODB_URI = process.env.MONGODB_URI || "";
+app.use('/api/auth', authRoutes);
+app.use('/api/blogs', blogRoutes);
 
-async function start() {
-  try {
-    if (MONGODB_URI) {
-      await mongoose.connect(MONGODB_URI);
-    }
+app.use(errorHandler);
 
-    app.listen(PORT, () => {
-      /* server started */
-    });
-  } catch (err) {
-    console.error("Failed to start server", err);
-    process.exit(1);
-  }
+try {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+} catch (error) {
+  console.error('Error starting server:', error);
 }
 
-start();
-
-module.exports = app;
-
-
-
+export default app;
