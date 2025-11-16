@@ -1,4 +1,9 @@
-import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import User, { IUser } from '../models/user.model';
-import mongoose, { Document } from 'mongoose';
+const jwt = require('jsonwebtoken');
+const User = require('../models/user.model');
+
+const generateToken = (id) => {
+  const secret = process.env.JWT_SECRET || 'fallback_secret';
+  return jwt.sign({ id }, secret, {
+    expiresIn: '7d'
+  });
+};
