@@ -23,6 +23,72 @@ const createBlog = async (req, res) => {
     });
   }
 };
+const getBlogById = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate('author', 'name email');
+
+    if (!blog) {
+      res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Get blog by ID error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+};
+
+const updateBlog = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const userId = req.user._id;
+
+    let blog = await Blog.findById(req.params.id);
+
+    if (!blog) {
+      res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
+      return;
+    }
+
+    if (blog.author.toString() !== userId.toString()) {
+      res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this blog',
+      });
+      return;
+    }
+
+    blog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { title, content },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      data: blog,
+    });
+  } catch (error) {
+    console.error('Update blog error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+};
 
 const getAllBlogs = async (req, res) => {
   try {
