@@ -11,7 +11,6 @@ const validate = (schema) => {
         message: errorMessage,
       });
     }
-    
     next();
   };
 };
