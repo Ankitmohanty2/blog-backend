@@ -1,18 +1,19 @@
-## blog_app_backend
+# 📝 Blog App Backend
 
-TypeScript Express backend scaffold for a blog application.
+A scalable **Node.js + Express.js** REST API backend for a blog application.  
+Built with clean architecture principles, JWT authentication, and MongoDB integration.
 
-### Scripts
-- `npm run dev`: Start development server with nodemon (`src/app.js`)
-- `npm start`: Run server with Node (`src/app.js`)
+---
 
-### Environment
-Create a `.env` file with:
+## 🚀 Tech Stack
 
-```
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/blog_app
-JWT_SECRET=replace_me
-```
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- JSON Web Token (JWT)
+- dotenv
+- Nodemon
 
+---
 
+## 📂 Project Structure
